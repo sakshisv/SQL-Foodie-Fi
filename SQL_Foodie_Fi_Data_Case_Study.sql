@@ -24,3 +24,12 @@ where a.plan_name = 'trial'
 group by month(b.start_date), DATENAME(MONTH, b.start_date)
 order by 1
 
+--Q3. What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name.
+
+select a.plan_name, count(*) count_of_events from plans a
+left join subscriptions b
+on a.plan_id = b.plan_id
+where YEAR(b.start_date) > '2020'
+group by a.plan_name
+order by 2
+
