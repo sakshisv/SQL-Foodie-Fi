@@ -33,3 +33,16 @@ where YEAR(b.start_date) > '2020'
 group by a.plan_name
 order by 2
 
+--Q4. What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
+
+select count(distinct b.customer_id) customer_count, 
+round(100.0 * count(b.customer_id)/ (select count(distinct customer_id) from subscriptions), 1) customer_pct 
+from plans a
+left join subscriptions b
+on a.plan_id = b.plan_id
+where a.plan_name = 'churn'
+
+
+
+
+
