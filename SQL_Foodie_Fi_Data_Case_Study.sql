@@ -67,6 +67,10 @@ count(*) * 100/ (select count(distinct customer_id) from subscriptions) as plan_
 from next_plan
 where next_plan is not null and plan_id = 0
 group by next_plan
+order by next_plan
+
+--Q7.
+
 
 
 
