@@ -42,6 +42,18 @@ left join subscriptions b
 on a.plan_id = b.plan_id
 where a.plan_name = 'churn'
 
+--Q5. How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
+
+with ranking as (
+select b.customer_id, a.plan_id, a.plan_name, ROW_NUMBER() over (partition by b.customer_id order by a.plan_id) as plan_rank
+from plans a
+left join subscriptions b
+on a.plan_id = b.plan_id)
+
+select count(distinct customer_id) churn_customers, round(100 * count(customer_id)/ (select count(distinct customer_id) from subscriptions), 1) churn_customer_pct 
+from ranking
+where plan_name = 'churn' and plan_rank = 2
+
 
 
 
