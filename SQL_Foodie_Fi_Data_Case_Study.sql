@@ -69,7 +69,13 @@ where next_plan is not null and plan_id = 0
 group by next_plan
 order by next_plan
 
---Q7.
+--Q7. What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
+
+select * from plans a
+left join subscriptions b
+on a.plan_id = b.plan_id
+where
+
 
 
 
