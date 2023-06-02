@@ -57,7 +57,16 @@ where plan_name = 'churn' and plan_rank = 2
 
 --Q6. What is the number and percentage of customer plans after their initial free trial?
 
+with next_plan as (
+select customer_id, plan_id,
+LEAD(plan_id, 1) over (partition by customer_id order by plan_id) as next_plan
+from subscriptions)
 
+select next_plan, count(*) as plan_conversions,
+count(*) * 100/ (select count(distinct customer_id) from subscriptions) as plan_conversions_pct
+from next_plan
+where next_plan is not null and plan_id = 0
+group by next_plan
 
 
 
