@@ -50,9 +50,13 @@ from plans a
 left join subscriptions b
 on a.plan_id = b.plan_id)
 
-select count(distinct customer_id) churn_customers, round(100 * count(customer_id)/ (select count(distinct customer_id) from subscriptions), 1) churn_customer_pct 
+select count(distinct customer_id) churn_customers, 
+round(100 * count(customer_id)/ (select count(distinct customer_id) from subscriptions), 1) churn_customer_pct 
 from ranking
 where plan_name = 'churn' and plan_rank = 2
+
+--Q6. What is the number and percentage of customer plans after their initial free trial?
+
 
 
 
