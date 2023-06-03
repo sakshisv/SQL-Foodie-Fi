@@ -76,10 +76,16 @@ select *, RANK() over (partition by customer_id order by start_date desc) date_r
 from subscriptions
 where start_date <= '2020-12-31')
 
-select * 
+select b.plan_name, count(a.plan_id) as customer_count,
+CAST(count(a.plan_id) AS Float) * 100/(select count(customer_id) FROM ranking where date_rank = 1) as customer_pct
 from ranking a
 left join plans b
 on a.plan_id = b.plan_id
+where date_rank = 1
+group by b.plan_name
+order by 2 desc
+
+
 
 
 select a.plan_name, count(distinct b.customer_id) customer_count,
