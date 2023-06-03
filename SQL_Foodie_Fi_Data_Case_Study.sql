@@ -71,6 +71,17 @@ order by next_plan
 
 --Q7. What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
 
+with ranking as(
+select *, RANK() over (partition by customer_id order by start_date desc) date_rank
+from subscriptions
+where start_date <= '2020-12-31')
+
+select * 
+from ranking a
+left join plans b
+on a.plan_id = b.plan_id
+
+
 select a.plan_name, count(distinct b.customer_id) customer_count,
 round(100 * count(customer_id)/ (select count(distinct customer_id) from subscriptions), 1) customer_pct
 from plans a
@@ -78,6 +89,8 @@ left join subscriptions b
 on a.plan_id = b.plan_id
 where b.start_date <= '2020-12-31'
 group by a.plan_name
+
+
 
 
 
