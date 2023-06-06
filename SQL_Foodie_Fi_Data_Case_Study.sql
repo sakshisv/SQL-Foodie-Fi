@@ -127,13 +127,17 @@ day_period as
 select DATEDIFF(day, a.trial_date, b.annual_date) day_diff from trial_plan a
 left join annual_plan b
 on a.customer_id = b.customer_id
-),
+where b.annual_date is not null
+)
+
+select * from day_period
+,
 group_day_period as
 (
 select *, floor(day_diff/30) as days_group from day_period
 )
 
-select CONCAT((days_group * 30) + 1, '-', (days_group + 1) *30, 'days') as day_periods,
+select CONCAT((days_group * 30) + 1, ' - ', (days_group + 1) *30, 'days') as day_periods,
 COUNT(days_group) as days_count
 from group_day_period
 group by days_group
