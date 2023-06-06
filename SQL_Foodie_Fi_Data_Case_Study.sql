@@ -94,13 +94,39 @@ where a.plan_name = 'pro annual' and YEAR(b.start_date) = '2020'
 
 --Q9. How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
 
+with trial_plan as (
+select customer_id, start_date as trial_date 
+from subscriptions
+where plan_id = 0)
+, annual_plan as (
+select customer_id, start_date as annual_date 
+from subscriptions
+where plan_id = 3)
+
+/*select AVG(DATEDIFF(day, a.trial_date, b.annual_date)) avg_days from trial_plan a
+left join annual_plan b
+on a.customer_id = b.customer_id*/
+
+select AVG(b.annual_date - a.trial_date) avg_days from trial_plan a
+left join annual_plan b
+on a.customer_id = b.customer_id
 
 
-select avg(DAY(b.start_date)) avg_days from plans a
-left join subscriptions b
-on a.plan_id = b.plan_id
-where a.plan_id > 0 and a.plan_id <= 3
+WITH START_CTE AS (SELECT customer_id,
+                    start_date 
+             FROM subscriptions s
+             INNER JOIN plans p ON s.plan_id = p.plan_id
+             WHERE plan_name = 'trial' ),
 
+ANNUAL_CTE AS (SELECT customer_id,
+                start_date as start_annual
+          FROM subscriptions s
+          INNER JOIN plans p ON s.plan_id = p.plan_id
+          WHERE plan_name = 'pro annual' )
+
+SELECT Avg(DATEDIFF(day,start_date,start_annual)) as average_day
+FROM ANNUAL_CTE C2
+LEFT JOIN START_CTE C1 ON C2.customer_id =C1.customer_id;
 
 
 
