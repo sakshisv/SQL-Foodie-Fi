@@ -92,7 +92,14 @@ left join subscriptions b
 on a.plan_id = b.plan_id
 where a.plan_name = 'pro annual' and YEAR(b.start_date) = '2020'
 
+--Q9. How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
 
+
+
+select avg(DAY(b.start_date)) avg_days from plans a
+left join subscriptions b
+on a.plan_id = b.plan_id
+where a.plan_id > 0 and a.plan_id <= 3
 
 
 
