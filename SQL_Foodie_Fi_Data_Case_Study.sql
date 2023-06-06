@@ -97,36 +97,46 @@ where a.plan_name = 'pro annual' and YEAR(b.start_date) = '2020'
 with trial_plan as (
 select customer_id, start_date as trial_date 
 from subscriptions
-where plan_id = 0)
-, annual_plan as (
+where plan_id = 0
+),
+annual_plan as (
 select customer_id, start_date as annual_date 
 from subscriptions
 where plan_id = 3)
 
-/*select AVG(DATEDIFF(day, a.trial_date, b.annual_date)) avg_days from trial_plan a
-left join annual_plan b
-on a.customer_id = b.customer_id*/
-
-select AVG(b.annual_date - a.trial_date) avg_days from trial_plan a
+select AVG(DATEDIFF(day, a.trial_date, b.annual_date)) avg_days from trial_plan a
 left join annual_plan b
 on a.customer_id = b.customer_id
 
+--Q10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
 
-WITH START_CTE AS (SELECT customer_id,
-                    start_date 
-             FROM subscriptions s
-             INNER JOIN plans p ON s.plan_id = p.plan_id
-             WHERE plan_name = 'trial' ),
+with trial_plan as 
+(
+select customer_id, start_date as trial_date 
+from subscriptions
+where plan_id = 0
+),
+annual_plan as 
+(
+select customer_id, start_date as annual_date 
+from subscriptions
+where plan_id = 3
+),
+day_period as 
+(
+select DATEDIFF(day, a.trial_date, b.annual_date) day_diff from trial_plan a
+left join annual_plan b
+on a.customer_id = b.customer_id
+),
+group_day_period as
+(
+select *, floor(day_diff/30) as days_group from day_period
+)
 
-ANNUAL_CTE AS (SELECT customer_id,
-                start_date as start_annual
-          FROM subscriptions s
-          INNER JOIN plans p ON s.plan_id = p.plan_id
-          WHERE plan_name = 'pro annual' )
-
-SELECT Avg(DATEDIFF(day,start_date,start_annual)) as average_day
-FROM ANNUAL_CTE C2
-LEFT JOIN START_CTE C1 ON C2.customer_id =C1.customer_id;
+select CONCAT((days_group * 30) + 1, '-', (days_group + 1) *30, 'days') as day_periods,
+COUNT(days_group) as days_count
+from group_day_period
+group by days_group
 
 
 
