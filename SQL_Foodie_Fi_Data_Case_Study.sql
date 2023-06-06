@@ -85,16 +85,20 @@ where date_rank = 1
 group by b.plan_name
 order by 2 desc
 
+--Q8. How many customers have upgraded to an annual plan in 2020?
 
-
-
-select a.plan_name, count(distinct b.customer_id) customer_count,
-round(100 * count(customer_id)/ (select count(distinct customer_id) from subscriptions), 1) customer_pct
-from plans a
+select count(distinct b.customer_id)customer_count from plans a
 left join subscriptions b
 on a.plan_id = b.plan_id
-where b.start_date <= '2020-12-31'
-group by a.plan_name
+where a.plan_name = 'pro annual' and YEAR(b.start_date) = '2020'
+
+
+
+
+
+
+
+
 
 
 
