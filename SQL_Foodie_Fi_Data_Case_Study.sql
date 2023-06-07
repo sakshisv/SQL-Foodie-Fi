@@ -148,6 +148,7 @@ from subscriptions
 where YEAR(start_date) = '2020')
 
 select * from next_plan
+select * from plans
 
 --select count(*) cust_downgrade from next_plan
 where next_plan = 1 and plan_id = 2
