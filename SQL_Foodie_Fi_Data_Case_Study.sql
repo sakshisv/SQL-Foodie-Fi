@@ -141,14 +141,7 @@ group by days_group
 
 --Q11. How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
 
-with next_plan as (
-select *,
-LEAD(plan_id, 1) over (partition by customer_id order by plan_id) as next_plan
-from subscriptions
-where YEAR(start_date) = '2020')
 
-select count(*) cust_downgrade from next_plan
-where next_plan = 1 and plan_id = 2
 
 
 
